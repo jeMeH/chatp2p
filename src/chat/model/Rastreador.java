@@ -33,7 +33,6 @@ public class Rastreador extends Thread {
     }
 
     public void addHost(Host h) {
-
         this.clients.add(h);
         System.out.println(h.toString());
     }

@@ -42,7 +42,7 @@ public class Client extends Thread {
     public void iniciarServer() {
         socket = null;
         try {
-            socket = new Socket("192.168.0.11", 1618);
+            socket = new Socket("192.168.2.101", 1618);
         } catch (UnknownHostException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
