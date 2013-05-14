@@ -11,6 +11,7 @@ import java.io.PrintStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -22,7 +23,11 @@ public class Client extends Thread {
 
     private BufferedReader read;
     private PrintStream write;
+    private BufferedReader readtoServer;
+    private PrintStream writetoServer;
+    private LinkedList<Host> hosts;
     private Socket socket;
+    private Socket sockettoSever;
     private String ip;
     private String nick;
 
@@ -49,8 +54,10 @@ public class Client extends Thread {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
         try {
-            read = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            write = new PrintStream(socket.getOutputStream());
+//            read = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+//            write = new PrintStream(socket.getOutputStream());
+            readtoServer = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            writetoServer = new PrintStream(socket.getOutputStream());
         } catch (IOException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -61,10 +68,34 @@ public class Client extends Thread {
         write.println(mensaje);
     }
 
+    public void getListHostSever (String in) {
+        this.hosts = new LinkedList<>();
+        String a[] = in.split(",");
+        for (int i = 0; a.length > i; i++) {
+            this.hosts.add(new Host(a[i + 1], a[i]));
+        }
+    }
+
     public String recibir() {
         String mostrar = null;
         try {
             mostrar = read.readLine();
+        } catch (IOException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return mostrar;
+    }
+
+    public void enviartoServer(String mensaje) {
+
+        writetoServer.println(mensaje);
+    }
+
+    public String recibirtoServer() {
+        String mostrar = null;
+        try {
+            mostrar = readtoServer.readLine();
         } catch (IOException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -99,7 +130,7 @@ public class Client extends Thread {
                 } catch (IOException ex) {
                     Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                if(socket != null){
+                if (socket != null) {
                     break;
                 }
             }

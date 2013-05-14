@@ -22,6 +22,7 @@ public class Rastreador extends Thread {
     private ServerSocket serverSocket;
     private LinkedList<Host> clients;
     BufferedReader readerStream = null;
+    
 
     public Rastreador() throws IOException {
         serverSocket = new ServerSocket(1618);
@@ -32,9 +33,6 @@ public class Rastreador extends Thread {
 
         this.clients.add(h);
         System.out.println(h.toString());
-        this.start();
-       
-
     }
 
     public LinkedList<Host> getListClientes() {
@@ -68,6 +66,7 @@ public class Rastreador extends Thread {
         try {
             while (true) {
                 String message = readerStream.readLine();
+                
                 if (message == null) {
                     break;
                 }
