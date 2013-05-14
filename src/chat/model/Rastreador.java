@@ -51,6 +51,15 @@ public class Rastreador extends Thread {
                 readerStream = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
                 write = new PrintStream(clientSocket.getOutputStream());
                 this.clientsWrite.add(write);
+                for (Host h: this.clients){
+                    Gson gson = new Gson();
+                     String g = "";
+                    if (clientSocket.getLocalAddress().getHostAddress().equals(h.getIp())){
+                         g = gson.toJson(h);
+                          write.print(g);
+                    }
+                }
+                
                 this.iniciar(clientSocket);
             }
         } catch (IOException ex) {
@@ -75,6 +84,7 @@ public class Rastreador extends Thread {
             this.clientsWrite.get(i).print(g);
         }
     }
+    
 
     public void iniciar(Socket clientSocket) {
         try {

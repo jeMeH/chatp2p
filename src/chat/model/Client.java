@@ -87,11 +87,7 @@ public class Client extends Thread {
         
         this.hosts = new LinkedList<>();
         this.hosts.add(fromJson);
-//        String a[] = in.split(",");
-//        for (int i = 0; i < a.length / 2; i++) {
-//            this.hosts.add(new Host(a[i + 1], a[i]));
-//        }
-    }
+}
 
     public String recibir() {
         String mostrar = null;
@@ -111,6 +107,15 @@ public class Client extends Thread {
 
     public String recibirtoServer() {
         try {
+            socket = new Socket("192.168.2.102", 1618);
+        } catch (UnknownHostException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
+            readtoServer = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            writetoServer = new PrintStream(socket.getOutputStream());
             while (true) {
                 String message = readtoServer.readLine();
 
