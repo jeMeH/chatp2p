@@ -5,13 +5,17 @@
 package chat.view;
 
 import chat.model.Client;
+import chat.model.Host;
+import javax.swing.DefaultListModel;
 
 /**
  *
  * @author atlas
  */
 public class FrameChat extends javax.swing.JFrame {
-private Client client;
+
+    private Client client;
+
     /**
      * Creates new form FrameChat
      */
@@ -81,8 +85,6 @@ private Client client;
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-   
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnSend;
     private javax.swing.JScrollPane jScrollPane1;
@@ -91,4 +93,13 @@ private Client client;
     private javax.swing.JTextField txtSend;
     private javax.swing.JTextArea txtaReceived;
     // End of variables declaration//GEN-END:variables
+
+    public void mostrarUsuario() {
+        this.client.getListHostSever(this.client.recibirtoServer());
+        DefaultListModel modelo = new DefaultListModel();
+        for (Host h : this.client.getHosts()) {
+            modelo.addElement(h.getNick());
+        }
+       this.listUser.setModel(modelo);
+    }
 }

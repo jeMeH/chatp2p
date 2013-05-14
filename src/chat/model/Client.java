@@ -40,27 +40,39 @@ public class Client extends Thread {
     }
 
     public void iniciarServer() {
-        iniciar("192.168.0.11");
-        this.enviar(this.ip + " " + this.nick);
-    }
-
-    public void iniciar(String ip) {
         socket = null;
         try {
-            socket = new Socket(ip, 1618);
+            socket = new Socket("192.168.0.11", 1618);
         } catch (UnknownHostException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
         try {
-//            read = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-//            write = new PrintStream(socket.getOutputStream());
             readtoServer = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             writetoServer = new PrintStream(socket.getOutputStream());
         } catch (IOException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
+        this.enviartoServer(this.ip + " " + this.nick);
+    }
+
+    public String iniciar(String ip) {
+        socket = null;
+        try {
+            socket = new Socket(ip, 4000);
+        } catch (UnknownHostException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
+            read = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            write = new PrintStream(socket.getOutputStream());
+        } catch (IOException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return "Ha iniciado sesion con la ip: " + ip;
     }
 
     public void enviar(String mensaje) {
@@ -68,7 +80,7 @@ public class Client extends Thread {
         write.println(mensaje);
     }
 
-    public void getListHostSever (String in) {
+    public void getListHostSever(String in) {
         this.hosts = new LinkedList<>();
         String a[] = in.split(",");
         for (int i = 0; a.length > i; i++) {
@@ -123,7 +135,6 @@ public class Client extends Thread {
             ServerSocket serverSocket = new ServerSocket(4000);
             while (true) {
                 this.socket = serverSocket.accept();
-                System.out.println("Cliente conectado " + socket.getInetAddress().getHostAddress());
                 try {
                     write = new PrintStream(this.socket.getOutputStream());
                     read = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
@@ -146,4 +157,13 @@ public class Client extends Thread {
             }
         }
     }
+
+    public LinkedList<Host> getHosts() {
+        return hosts;
+    }
+
+    public void setHosts(LinkedList<Host> hosts) {
+        this.hosts = hosts;
+    }
+    
 }

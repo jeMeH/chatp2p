@@ -7,6 +7,7 @@ package chat.model;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.LinkedList;
@@ -21,12 +22,14 @@ public class Rastreador extends Thread {
 
     private ServerSocket serverSocket;
     private LinkedList<Host> clients;
-    BufferedReader readerStream = null;
-    
+    private LinkedList<PrintStream> clientsWrite;
+    private BufferedReader readerStream = null;
+    private PrintStream write;
 
     public Rastreador() throws IOException {
         serverSocket = new ServerSocket(1618);
         this.clients = new LinkedList<>();
+        this.clientsWrite = new LinkedList<>();
     }
 
     public void addHost(Host h) {
@@ -44,9 +47,9 @@ public class Rastreador extends Thread {
         try {
             while (true) {
                 Socket clientSocket = serverSocket.accept();
-
                 readerStream = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-
+                write = new PrintStream(clientSocket.getOutputStream());
+                this.clientsWrite.add(write);
                 this.iniciar(clientSocket);
             }
         } catch (IOException ex) {
@@ -62,11 +65,18 @@ public class Rastreador extends Thread {
         }
     }
 
+    public void enviarListHost(String in) {
+        int i = 0;
+        for (Host h : this.clients) {
+            this.clientsWrite.get(i).print(h.getIp() + "," + h.getNick());
+        }
+    }
+
     public void iniciar(Socket clientSocket) {
         try {
             while (true) {
                 String message = readerStream.readLine();
-                
+
                 if (message == null) {
                     break;
                 }
