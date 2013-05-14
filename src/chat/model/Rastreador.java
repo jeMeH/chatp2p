@@ -19,18 +19,18 @@ import java.util.logging.Logger;
  *
  * @author atlas
  */
-public class Rastreador extends Thread {
+public class Rastreador implements Runnable{
 
     private ServerSocket serverSocket;
     private LinkedList<Host> clients;
-    private LinkedList<PrintStream> clientsWrite;
     private BufferedReader readerStream = null;
     private PrintStream write;
+    private Thread thread;
+    private Thread threadList;
 
     public Rastreador() throws IOException {
         serverSocket = new ServerSocket(1618);
         this.clients = new LinkedList<>();
-        this.clientsWrite = new LinkedList<>();
     }
 
     public void addHost(Host h) {
@@ -46,20 +46,20 @@ public class Rastreador extends Thread {
     @Override
     public void run() {
         try {
-            while (true) {
+            while (thread != null) {
                 Socket clientSocket = serverSocket.accept();
                 readerStream = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
                 write = new PrintStream(clientSocket.getOutputStream());
-                this.clientsWrite.add(write);
-                for (Host h: this.clients){
+                //si la ip esta contenida en la lista se envia la lista de usuarios
+                for (Host h : this.clients) {
                     Gson gson = new Gson();
-                     String g = "";
-                    if (clientSocket.getLocalAddress().getHostAddress().equals(h.getIp())){
-                         g = gson.toJson(h);
-                          write.print(g);
+                    String g = "";
+                    if (clientSocket.getLocalAddress().getHostAddress().equals(h.getIp())) {
+                        g = gson.toJson(h);
+                        write.print(g);
                     }
                 }
-                
+
                 this.iniciar(clientSocket);
             }
         } catch (IOException ex) {
@@ -74,6 +74,19 @@ public class Rastreador extends Thread {
             }
         }
     }
+    
+    public void start (){
+        if (this.thread == null){
+            this.thread = new Thread(this);
+        }
+        if (this.threadList == null){
+            this.threadList = new Thread(this);
+        }
+        if(!this.thread.isAlive() || this.threadList.isAlive()){
+            this.start();
+        }
+        this.run();
+    }
 
     public void enviarListHost() {
         int i = 0;
@@ -84,7 +97,6 @@ public class Rastreador extends Thread {
             this.clientsWrite.get(i).print(g);
         }
     }
-    
 
     public void iniciar(Socket clientSocket) {
         try {
