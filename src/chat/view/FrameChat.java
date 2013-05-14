@@ -25,7 +25,7 @@ public class FrameChat extends javax.swing.JFrame {
         initComponents();
         this.client = client;
         this.client.iniciarServer();
-        this.mostrarUsuario();
+        //this.mostrarUsuario();
         this.btnActualizar.addActionListener(new HandlerList());
     }
 

@@ -40,6 +40,9 @@ public class Client extends Thread {
     public Client() {
     }
 
+    /**
+     * enviar solicitud al tracer
+     */
     public void iniciarServer() {
         socket = null;
         try {
@@ -58,53 +61,26 @@ public class Client extends Thread {
         this.enviartoServer(this.ip + " " + this.nick);
     }
 
-    public String iniciar(String ip) {
-        socket = null;
-        try {
-            socket = new Socket(ip, 4000);
-        } catch (UnknownHostException ex) {
-            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        try {
-            read = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            write = new PrintStream(socket.getOutputStream());
-        } catch (IOException ex) {
-            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return "Ha iniciado sesion con la ip: " + ip;
-    }
-
-    public void enviar(String mensaje) {
-
-        write.println(mensaje);
-    }
-
     public void getListHostSever(String in) {
         Gson gson = new Gson();
         Host fromJson = gson.fromJson(in, Host.class);
-        
+
         this.hosts = new LinkedList<>();
         this.hosts.add(fromJson);
-}
-
-    public String recibir() {
-        String mostrar = null;
-        try {
-            mostrar = read.readLine();
-        } catch (IOException ex) {
-            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        return mostrar;
     }
 
+    /**
+     * enviar mensaje del server
+     * @param mensaje 
+     */
     public void enviartoServer(String mensaje) {
 
         writetoServer.println(mensaje);
     }
-
+/**
+     * recibir mensaje del server
+     * @param mensaje 
+     */
     public String recibirtoServer() {
         try {
             socket = new Socket("192.168.2.102", 1618);
@@ -131,20 +107,53 @@ public class Client extends Thread {
         return "no hay clientes";
     }
 
-    public void closeCanales() {
+    public String iniciar(String ip) {
+        socket = null;
         try {
-            read.close();
+            socket = new Socket(ip, 4000);
+        } catch (UnknownHostException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
-        write.close();
         try {
-            socket.close();
+            read = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            write = new PrintStream(socket.getOutputStream());
         } catch (IOException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
+        return "Ha iniciado sesion con la ip: " + ip;
     }
 
+    /**
+     * envia un mensaje a un par cliente
+     *
+     * @param mensaje
+     */
+    public void enviar(String mensaje) {
+
+        write.println(mensaje);
+    }
+
+    /**
+     * recibe un mensaje de un par cliente
+     *
+     * @return
+     */
+    public String recibir() {
+        String mostrar = null;
+        try {
+            mostrar = read.readLine();
+        } catch (IOException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return mostrar;
+    }
+
+    /**
+     * Se ejecuta el serversocket esperando una solicitud del lciente
+     */
     @Override
     public void run() {
         try {
@@ -174,6 +183,26 @@ public class Client extends Thread {
         }
     }
 
+    /**
+     * cerrar todos los canales o flujos de entrada y salidas y el socket
+     */
+    public void closeCanales() {
+        try {
+            read.close();
+        } catch (IOException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        write.close();
+        try {
+            socket.close();
+        } catch (IOException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    /**
+     * get y sets
+     */
     public LinkedList<Host> getHosts() {
         return hosts;
     }
