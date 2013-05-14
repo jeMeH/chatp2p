@@ -108,15 +108,12 @@ public class FrameChat extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     private void mostrarUsuario() {
-        while (this.client.recibirtoServer() == null){
-            
-        }
         this.client.getListHostSever(this.client.recibirtoServer());
         DefaultListModel modelo = new DefaultListModel();
         for (Host h : this.client.getHosts()) {
             modelo.addElement(h.getNick());
         }
-       this.listUser.setModel(modelo);
+        this.listUser.setModel(modelo);
     }
     
     class HandlerList implements ActionListener{

@@ -80,6 +80,7 @@ public class Rastreador extends Thread {
                 if (message == null) {
                     break;
                 }
+                
                 String a[] = message.split("\\ ");
                 this.addHost(new Host(a[1], a[0]));
                 break;

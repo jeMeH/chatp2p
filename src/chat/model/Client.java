@@ -83,7 +83,7 @@ public class Client extends Thread {
     public void getListHostSever(String in) {
         this.hosts = new LinkedList<>();
         String a[] = in.split(",");
-        for (int i = 0; a.length > i; i++) {
+        for (int i = 0; i < a.length / 2; i++) {
             this.hosts.add(new Host(a[i + 1], a[i]));
         }
     }
@@ -105,14 +105,20 @@ public class Client extends Thread {
     }
 
     public String recibirtoServer() {
-        String mostrar = null;
         try {
-            mostrar = readtoServer.readLine();
-        } catch (IOException ex) {
-            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
-        }
+            while (true) {
+                String message = readtoServer.readLine();
 
-        return mostrar;
+                if (message == null) {
+                    continue;
+                }
+
+                return message;
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(Rastreador.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return "no hay clientes";
     }
 
     public void closeCanales() {
@@ -165,5 +171,4 @@ public class Client extends Thread {
     public void setHosts(LinkedList<Host> hosts) {
         this.hosts = hosts;
     }
-    
 }
