@@ -4,6 +4,7 @@
  */
 package chat.model;
 
+import com.google.gson.Gson;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -81,11 +82,15 @@ public class Client extends Thread {
     }
 
     public void getListHostSever(String in) {
+        Gson gson = new Gson();
+        Host fromJson = gson.fromJson(in, Host.class);
+        
         this.hosts = new LinkedList<>();
-        String a[] = in.split(",");
-        for (int i = 0; i < a.length / 2; i++) {
-            this.hosts.add(new Host(a[i + 1], a[i]));
-        }
+        this.hosts.add(fromJson);
+//        String a[] = in.split(",");
+//        for (int i = 0; i < a.length / 2; i++) {
+//            this.hosts.add(new Host(a[i + 1], a[i]));
+//        }
     }
 
     public String recibir() {

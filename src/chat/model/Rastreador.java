@@ -4,6 +4,7 @@
  */
 package chat.model;
 
+import com.google.gson.Gson;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -67,8 +68,11 @@ public class Rastreador extends Thread {
 
     public void enviarListHost() {
         int i = 0;
+        String g = new String();
+        Gson gson = new Gson();
         for (Host h : this.clients) {
-            this.clientsWrite.get(i).print(h.getIp() + "," + h.getNick());
+            g = gson.toJson(h);
+            this.clientsWrite.get(i).print(g);
         }
     }
 
@@ -80,7 +84,7 @@ public class Rastreador extends Thread {
                 if (message == null) {
                     break;
                 }
-                
+
                 String a[] = message.split("\\ ");
                 this.addHost(new Host(a[1], a[0]));
                 break;
