@@ -45,7 +45,7 @@ public class Main {
             Client cliente = new Client(ip, nick);
             FrameChat frame = new FrameChat(cliente);
             frame.setBounds(10, 10, 600, 500);
-            frame.setTitle("Chat p2p - " + nick);
+            frame.setTitle("Chat p2p -" + nick);
             frame.setVisible(true);
         }
     }
