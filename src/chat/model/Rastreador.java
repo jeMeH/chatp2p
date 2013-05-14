@@ -35,6 +35,7 @@ public class Rastreador extends Thread {
     public void addHost(Host h) {
         this.clients.add(h);
         System.out.println(h.toString());
+        this.enviarListHost();
     }
 
     public LinkedList<Host> getListClientes() {
@@ -64,7 +65,7 @@ public class Rastreador extends Thread {
         }
     }
 
-    public void enviarListHost(String in) {
+    public void enviarListHost() {
         int i = 0;
         for (Host h : this.clients) {
             this.clientsWrite.get(i).print(h.getIp() + "," + h.getNick());
